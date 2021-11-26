@@ -75,23 +75,23 @@
 }
 
 
-\newtcbtheorem[number within=section, use counter=thm]{theorem}{\@thmtitle}{
+\newtcbtheorem[number within=section, use counter=thm]{@theorem}{\@thmtitle}{
     thmstyle,
     label type=theorem
 }{th}
-\newtcbtheorem[number within=section, use counter=thm]{lemma}{\@lemtitle}{
+\newtcbtheorem[number within=section, use counter=thm]{@lemma}{\@lemtitle}{
     propstyle,
     label type=lemma
 }{lem}
-\newtcbtheorem[number within=section, use counter=thm]{proposition}{\@proptitle}{
+\newtcbtheorem[number within=section, use counter=thm]{@proposition}{\@proptitle}{
     propstyle,
     label type=proposition
 }{prop}
-\newtcbtheorem[number within=section, use counter=thm]{corollary}{\@cortitle}{
+\newtcbtheorem[number within=section, use counter=thm]{@corollary}{\@cortitle}{
     propstyle,
     label type=corollary
 }{cor}
-\newtcbtheorem[number within=section, use counter=thm]{definition}{\@deftitle}{
+\newtcbtheorem[number within=section, use counter=thm]{@definition}{\@deftitle}{
     defstyle,
     label type=definition
 }{def}
@@ -105,7 +105,7 @@
     % qed={$\lrcorner$},
     postheadspace=1em
 ]{exmplstyle}
-\declaretheorem[name=\@exmpltitle, sibling=thm, style=exmplstyle]{example}
+\declaretheorem[name=\@exmpltitle, sibling=thm, style=exmplstyle]{@example}
 
 % <* exercisestyle *> %
 \declaretheoremstyle[
@@ -116,7 +116,7 @@
     % qed={$\lrcorner$},
     postheadspace=1em
 ]{exercisestyle}
-\declaretheorem[name=\@exrctitle, sibling=thm, style=exercisestyle]{exercise}
+\declaretheorem[name=\@exrctitle, sibling=thm, style=exercisestyle]{@exercise}
 
 % <* solutionstyle *> %
 \declaretheoremstyle[
@@ -129,7 +129,7 @@
     qed={$\lrcorner$},
     postheadspace=10pt
 ]{solutionstyle}
-\declaretheorem[name=\@soltitle, style=solutionstyle, numbered=no]{solution}
+\declaretheorem[name=\@soltitle, style=solutionstyle, numbered=no]{@solution}
 \declaretheorem[name=Intuizione, style=solutionstyle, numbered=no]{intuition}
 
 % <* remarkstyle *> %
@@ -140,7 +140,7 @@
     bodyfont=\normalfont\normalsize,
     postheadspace=1em
 ]{remarkstyle}
-\declaretheorem[name=\@remtitle, style=remarkstyle, numberwithin=section]{remark}
+\declaretheorem[name=\@remtitle, style=remarkstyle, numberwithin=section]{@remark}
 
 % <* notationstyle *> %
 \declaretheoremstyle[
@@ -150,7 +150,7 @@
     bodyfont=\normalfont\normalsize,
     postheadspace=1em
 ]{notationstyle}
-\declaretheorem[name=\@notationtitle, style=notationstyle, numbered=no]{notation}
+\declaretheorem[name=\@notationtitle, style=notationstyle, numbered=no]{@notation}
 
 \renewenvironment{proof}[1][\proofname]
     {\par\pushQED{\qed}%
@@ -252,5 +252,80 @@
         before upper={\parindent11pt}
     }
 \fi
+
+%% ---------- INTERFACE ---------- %%
+% The interface is
+%   \begin{thm}[<thm title>][<label without prefix>]
+%   \end{thm}
+
+% Theorem
+\NewDocumentEnvironment{theorem}{oo}
+  { \begin{@theorem}{#1}{#2} }
+  { \end{@theorem} }
+
+% Proposition
+\NewDocumentEnvironment{proposition}{o o}
+  { \begin{@proposition}{#1}{#2} }
+  { \end{@proposition} }
+  
+% Lemma
+\NewDocumentEnvironment{lemma}{o o}
+  { \begin{@lemma}{#1}{#2} }
+  { \end{@lemma} }
+ 
+% Corollary
+\NewDocumentEnvironment{corollary}{o o}
+  { \begin{@corollary}{#1}{#2} }
+  { \end{@corollary} }
+
+% Definition
+\NewDocumentEnvironment{definition}{o o}
+  { \begin{@definition}{#1}{#2} }
+  { \end{@definition} }
+    
+    % Remark
+\NewDocumentEnvironment{remark}{o o}
+{ 
+    \IfValueTF{#1}
+    { \begin{@remark}[#1] }
+    { \begin{@remark} }
+    \IfValueT{#2}{ \label{rem:#2} }
+}{ \end{@remark} }
+
+% Example
+\NewDocumentEnvironment{example}{o o}
+{ 
+    \IfValueTF{#1}
+    { \begin{@example}[#1] }
+    { \begin{@example} }
+    \IfValueT{#2}{ \label{exmpl:#2} }
+}{ \end{@example} }
+
+% Exercise
+\NewDocumentEnvironment{exercise}{o o}
+{ 
+    \IfValueTF{#1}
+    { \begin{@exercise}[#1] }
+    { \begin{@exercise} }
+    \IfValueT{#2}{ \label{ex:#2} }
+}{ \end{@exercise} }
+
+% Solution
+\NewDocumentEnvironment{solution}{o o}
+{ 
+    \IfValueTF{#1}
+    { \begin{@solution}[#1] }
+    { \begin{@solution} }
+    \IfValueT{#2}{ \label{sol:#2} }
+}{ \end{@solution} }
+
+% Notation
+\NewDocumentEnvironment{notation}{o o}
+{ 
+    \IfValueTF{#1}
+    { \begin{@notation}[#1] }
+    { \begin{@notation} }
+    \IfValueT{#2}{ \label{sol:#2} }
+}{ \end{@notation} }
 
 \endinput
