@@ -98,8 +98,8 @@
 \newcommand{\inters}{\cap}                      % set intersection
 \newcommand{\bigunion}{\bigcup}                 % big set union
 \newcommand{\biginters}{\bigcap}                % big set union
-\newcommand{\disjunion}{\sqcup}                 % disjoint union
-\newcommand{\bigdisjunion}{\bigsqcup}           % big disjoint union
+\newcommand{\disjunion}{\amalg}                 % disjoint union
+\newcommand{\bigdisjunion}{\coprod}             % big disjoint union
 \newcommand{\compl}{^C}                         % set complement
 
 % Intervals
@@ -138,6 +138,26 @@
 \DeclarePairedDelimiter{\ang}{\langle}{\rangle} % angular parenthesis
 \DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
 \DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+
+% Optional delimiters (to be used inside other commands)
+\NewDocumentCommand{\@parens}{sog}{
+  \IfValueT{#3}
+  { 
+    \IfBooleanTF{#1}
+      { \parens*{#3} }
+      { \parens[#2]{#3} }
+  }
+}
+\NewDocumentCommand{\@squared}{sog}{
+  \IfValueT{#3}
+  { 
+    \IfBooleanTF{#1}
+      { \squared*{#3} }
+      { \squared[#2]{#3} }
+  }
+}
+
+
 \NewDocumentCommand{\norm}{sog}{                % norm (with automatic \cdot inside if empty)
     \IfValueTF{#3}{
         \IfBooleanTF{#1}{
@@ -223,59 +243,30 @@
         \xrightarrow{\raisebox{-1ex}[0ex][0ex]{$\sim$}}
     }
 }
+
+% deprecated: use iso
 \newcommand{\IsomTo}{\xrightarrow{\raisebox{-1ex}[0ex][0ex]{$\sim$}}}
 
 \DeclareMathOperator{\id}{id}               % identity function
 \newcommand{\inv}{^{-1}}                    % inverse
-\NewDocumentCommand{\Imm}{sog}{             % image of a function
-    \operatorname{Im}
-    \IfValueT{#3}{
-        \IfBooleanTF{#1}{
-            \parens*{#3}
-        }{
-            \parens[#2]{#3}
-        }
-    }
-} 
+\newcommand{\Imm}                           % image of a function
+  { \operatorname{Im}\@parens }
+
 \newcommand\restrict[1]                     % function restriction
     {\raisebox{-.5ex}{$|$}_{#1}}
-\NewDocumentCommand{\sgn}{sog}{             % sign function
-    \operatorname{sgn}
-    \IfValueT{#3}{
-        \IfBooleanTF{#1}{
-            \parens*{#3}
-        } {
-            \parens[#2]{#3}
-        }
-    }
-}
+\newcommand{\sgn}                           % sign function
+  { \operatorname{sgn}\@parens }
 
 %%% Complex numbers
 \let\oldre\Re
 \let\oldim\Im
 \let\Re\relax
 \let\Im\relax
-\DeclareDocumentCommand{\Re}{sog}{             % real part
-    \operatorname{Re}
-    \IfValueT{#3}{
-        \IfBooleanTF{#1}{
-            \parens*{#3}
-        }{
-            \parens[#2]{#3}
-        }
-    }
-}
-\DeclareDocumentCommand{\Im}{sog}{             % imaginary part
-    \operatorname{Im}
-    \IfValueT{#3}{
-        \IfBooleanTF{#1}{
-            \parens*{#3}
-        }{
-            \parens[#2]{#3}
-        }
-    }
-}
-\newcommand{\conj}[1]{\overline{#1}}            % complex conjugate
+\DeclareDocumentCommand{\Re}{}              % real part
+  { \operatorname{Re}\@parens }
+\DeclareDocumentCommand{\Im}{}              % imaginary part
+  { \operatorname{Re}\@parens }
+\newcommand{\conj}[1]{\overline{#1}}        % complex conjugate
 
 % Modular arithmetic
 \def\localbig#1#2{%  % used for (n)dividesaux just below
@@ -410,22 +401,12 @@
 \newcommand{\trans}{^T}                             % transposed
 \newcommand{\ctrans}{^H}                            % complex transposed
 
-\DeclareMathOperator{\tr}{tr}
-\NewDocumentCommand{\Span}{t+ som}{                 % Span of vectors
-    \operatorname{span}
-    \IfBooleanTF{#1}{
-        \IfBooleanTF{#2}{
-            \set*{#4}
-        }{
-            \set[#3]{#4}
-        }
-    }{
-        \IfBooleanTF{#2}{
-            \parens*{#4}
-        }{
-            \parens[#3]{#4}
-        }
-    }
+\DeclareMathOperator{\tr}{tr}                       % trace
+\NewDocumentCommand{\Span}{t+}{                 % Span of vectors
+    \operatorname{Span}
+    \IfBooleanTF{#1}
+      { \set }
+      { \@parens }
 }
 
 % Widebar
@@ -440,6 +421,7 @@
 \newcommand{\vecbar}[1]{\vec{\bar{#1}}}
 
 % MATHBB LETTERS
+\newcommand{\bb}{\mathbb}
 \newcommand{\A}{\mathbb{A}}
 \newcommand{\B}{\mathbb{B}}
 \newcommand{\C}{\mathbb{C}}     % complex numbers
@@ -470,6 +452,7 @@
 \newcommand{\Zmod}[1]{\quot{\Z}{#1\Z}} % integers mod #1
 
 % MATHCAL LETTERS
+\newcommand{\cal}{\mathcal}
 \renewcommand{\AA}{\mathcal{A}}
 \newcommand{\BB}{\mathcal{B}}
 \newcommand{\CC}{\mathcal{C}}

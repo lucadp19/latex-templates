@@ -4,8 +4,21 @@
 %           GENERAL         %
 \newcommand{\isomorph}{\simeq}                      % isomorph
 % \newcommand{\quot}[2]{{#1}/_{#2}}                   % quotient object
-\newcommand{\quot}[2]{
-    \mathchoice
+\NewDocumentCommand{\quot}{smm}{
+    \IfBooleanTF{#1} 
+    {% "left quotients" i.e. H\G
+        \mathchoice
+        {   %displaystyle
+            {\left.\raisebox{-.15em}{$#1$} \middle\backslash \raisebox{.15em}{$#2$}\right.}
+        } { % textstyle
+            {\left.\raisebox{.1em}{\text{\small $#1$}} \middle\backslash \raisebox{-.1em}{\text{\small $#2$}}\right.}
+        } { % scriptstyle
+            #1\backslash#2
+        } { % scriptstyle
+            #1\backslash#2
+        }
+    }{ % normal quotients, G/H
+        \mathchoice
         {   %displaystyle
             {\left.\raisebox{.15em}{$#1$}\middle/\raisebox{-.15em}{$#2$}\right.}
         } { % textstyle
@@ -15,12 +28,13 @@
         } { % scriptstyle
             #1/#2
         }
+    }
 }
 
 %       HOMOMORPHISMS       %
-\newcommand{\Hom}{\operatorname{Hom}\parens}         % Homomorphism set
-\newcommand{\End}{\operatorname{End}\parens}         % Endomorphism set
-\newcommand{\Inn}{\operatorname{Inn}\parens}         % Inner automorphism set
+\newcommand{\Hom}{\operatorname{Hom}\@parens}        % Homomorphism set
+\newcommand{\End}{\operatorname{End}\@parens}        % Endomorphism set
+\newcommand{\Inn}{\operatorname{Inn}\@parens}        % Inner automorphism set
 \NewDocumentCommand{\Aut}{s e_ o m}{                 % Automorphism set
     \operatorname{Aut}
     \IfValueT{#2}{
@@ -91,8 +105,8 @@
         \parens[#3]{#4}
     }
 }
-\newcommand{\orb}[1]{\operatorname{orb}\parens*{#1}}% orbit
-\NewDocumentCommand{\Stab}{s e_ o m}{                 % stabilizer
+\newcommand{\orb}{\operatorname{orb}\@parens}       % orbit
+\NewDocumentCommand{\Stab}{s e_ o m}{               % stabilizer
     \operatorname{Stab}
     \IfNoValueF{#2}{
         _{#2}
@@ -150,14 +164,8 @@
 \newcommand{\UFD}{\textsc{ufd}\xspace}
 \newcommand{\PID}{\textsc{pid}\xspace}
 \newcommand{\ED}{\textsc{ed}\xspace}
-\NewDocumentCommand{\content}{s o m}{
-    \operatorname{c}
-    \IfBooleanTF{#1}{
-        \parens*{#3}
-    }{
-        \parens[#2]{#3}
-    }
-}
+\NewDocumentCommand{\content}{}
+  { \operatorname{c}\parens }
 
 %       FIELD THEORY        %
 \newcommand{\FieldChar}{\operatorname{char}}        % characteristic of a field
@@ -169,7 +177,7 @@
         \squared[#2]{\Split@Colon{#3}}
     }
 }
-\providecommand{\fieldclos}[1]{\overline{#1}}
+\newcommand{\fieldclos}[1]{\overline{#1}}
 \DeclarePairedDelimiterX{\ParensGen}[1](){          % generators of a field
     \,\GenArgs{#1}\,
 }
@@ -238,8 +246,5 @@
 \NewDocumentCommand{\Split@Colon}{>{\SplitArgument{1}{:}}m}{\Split@ColonAux#1}
 \NewDocumentCommand{\Split@ColonAux}{mm}{#1\, : \, #2}
 \NewDocumentCommand{\Gal@Args}{>{\SplitArgument{1}{,}}m}{\ExtArgsAux#1}
-
-% ALGEBRA 2 $
-
 
 \endinput
