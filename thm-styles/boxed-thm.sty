@@ -12,6 +12,19 @@
     \usepackage{thm-colors-names}
 \fi
 
+\ExplSyntaxOn
+\DeclareExpandableDocumentCommand{\IfNotEmptyTF}{mmm} % to check if empty
+{
+  \IfValueTF{#1}
+  { \tl_if_empty:nTF {#1} {#3} {#2} }
+  { #2 }
+}
+\DeclareExpandableDocumentCommand{\IfNotEmptyT}{mm} % to check if empty
+{ 
+  \IfValueT{#1}{ \tl_if_empty:nF {#1} {#2} }
+}
+\ExplSyntaxOff
+
 \newcounter{thm}[section]
 \tcbset{
     defstyle/.style={
@@ -152,6 +165,11 @@
 ]{notationstyle}
 \declaretheorem[name=\@notationtitle, style=notationstyle, numbered=no]{@notation}
 
+\crefalias{@remark}{remark}
+\crefalias{@example}{example}
+\crefalias{@exercise}{exercise}
+\crefalias{@solution}{solution}
+
 \renewenvironment{proof}[1][\proofname]
     {\par\pushQED{\qed}%
     \normalfont 
@@ -259,73 +277,73 @@
 %   \end{thm}
 
 % Theorem
-\NewDocumentEnvironment{theorem}{oo}
+\NewDocumentEnvironment{theorem}{O{}O{}}
   { \begin{@theorem}{#1}{#2} }
   { \end{@theorem} }
 
 % Proposition
-\NewDocumentEnvironment{proposition}{o o}
+\NewDocumentEnvironment{proposition}{O{}O{}}
   { \begin{@proposition}{#1}{#2} }
   { \end{@proposition} }
   
 % Lemma
-\NewDocumentEnvironment{lemma}{o o}
+\NewDocumentEnvironment{lemma}{O{}O{}}
   { \begin{@lemma}{#1}{#2} }
   { \end{@lemma} }
  
 % Corollary
-\NewDocumentEnvironment{corollary}{o o}
+\NewDocumentEnvironment{corollary}{O{}O{}}
   { \begin{@corollary}{#1}{#2} }
   { \end{@corollary} }
 
 % Definition
-\NewDocumentEnvironment{definition}{o o}
+\NewDocumentEnvironment{definition}{O{}O{}}
   { \begin{@definition}{#1}{#2} }
   { \end{@definition} }
     
     % Remark
 \NewDocumentEnvironment{remark}{o o}
 { 
-    \IfValueTF{#1}
+    \IfNotEmptyTF{#1}
     { \begin{@remark}[#1] }
     { \begin{@remark} }
-    \IfValueT{#2}{ \label{rem:#2} }
+    \IfNotEmptyT{#2}{ \label{rem:#2} }
 }{ \end{@remark} }
 
 % Example
 \NewDocumentEnvironment{example}{o o}
 { 
-    \IfValueTF{#1}
+    \IfNotEmptyTF{#1}
     { \begin{@example}[#1] }
     { \begin{@example} }
-    \IfValueT{#2}{ \label{exmpl:#2} }
+    \IfNotEmptyT{#2}{ \label{exmpl:#2} }
 }{ \end{@example} }
 
 % Exercise
 \NewDocumentEnvironment{exercise}{o o}
 { 
-    \IfValueTF{#1}
+    \IfNotEmptyTF{#1}
     { \begin{@exercise}[#1] }
     { \begin{@exercise} }
-    \IfValueT{#2}{ \label{ex:#2} }
+    \IfNotEmptyT{#2}{ \label{ex:#2} }
 }{ \end{@exercise} }
 
 % Solution
 \NewDocumentEnvironment{solution}{o o}
 { 
-    \IfValueTF{#1}
+    \IfNotEmptyTF{#1}
     { \begin{@solution}[#1] }
     { \begin{@solution} }
-    \IfValueT{#2}{ \label{sol:#2} }
+    \IfNotEmptyT{#2}{ \label{sol:#2} }
 }{ \end{@solution} }
 
 % Notation
 \NewDocumentEnvironment{notation}{o o}
 { 
-    \IfValueTF{#1}
+    \IfNotEmptyTF{#1}
     { \begin{@notation}[#1] }
     { \begin{@notation} }
-    \IfValueT{#2}{ \label{sol:#2} }
+    \IfNotEmptyT{#2}{ \label{sol:#2} }
 }{ \end{@notation} }
 
 \endinput

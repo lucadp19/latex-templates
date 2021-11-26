@@ -294,7 +294,7 @@
 \fi
 
 %%% HyperRef %%%
-\AtEndPreamble{
+% \AtEndPreamble{
     \PassOptionsToPackage{
         \notes@language,
         capitalise,
@@ -317,4 +317,4 @@
         capitalise,
         nameinlink
     ]{cleveref}
-}
+% }

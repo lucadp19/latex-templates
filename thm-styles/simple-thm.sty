@@ -12,6 +12,17 @@
     \usepackage{thm-colors-names}
 \fi
 
+\ExplSyntaxOn
+\DeclareExpandableDocumentCommand{\IfNotEmptyTF}{mmm} % to check if empty
+{
+  \IfValueTF{#1}
+  { \tl_if_empty:nTF {#1} {#3} {#2} }
+  { #2 }
+}
+\DeclareExpandableDocumentCommand{\IfNotEmptyT}{mm} % to check if empty
+  { \IfNotEmptyTF{#1}{#2}{} }
+\ExplSyntaxOff
+
 \renewenvironment{proof}[1][\proofname]
     {\par\pushQED{\qed}%
     \normalfont 
@@ -123,6 +134,16 @@
 ]{notationstyle}
 \declaretheorem[name=\@notationtitle, style=notationstyle, numbered=no]{@notation}
 
+% Aliases for cleveref
+\crefalias{@theorem}{theorem}
+\crefalias{@proposition}{proposition}
+\crefalias{@corollary}{corollary}
+\crefalias{@lemma}{lemma}
+\crefalias{@definition}{definition}
+\crefalias{@example}{example}
+\crefalias{@exercise}{exercise}
+\crefalias{@solution}{solution}
+
 %% ---------- INTERFACE ---------- %%
 % The interface is
 %   \begin{thm}[<thm title>][<label without prefix>]
@@ -131,91 +152,91 @@
 % Theorem
 \NewDocumentEnvironment{theorem}{oo}
 { 
-    \IfValueTF{#1}
+    \IfNotEmptyTF{#1}
     { \begin{@theorem}[#1] }
     { \begin{@theorem} }
-    \IfValueT{#2}{ \label{th:#2} }
+    \IfNotEmptyT{#2}{ \label{th:#2} }
 }{ \end{@theorem} }
 
 % Proposition
 \NewDocumentEnvironment{proposition}{oo}
 { 
-    \IfValueTF{#1}
+    \IfNotEmptyTF{#1}
     { \begin{@proposition}[#1] }
     { \begin{@proposition} }
-    \IfValueT{#2}{ \label{prop:#2} }
+    \IfNotEmptyT{#2}{ \label{prop:#2} }
 }{ \end{@proposition} }
 
 % Corollary
 \NewDocumentEnvironment{corollary}{oo}
 { 
-    \IfValueTF{#1}
+    \IfNotEmptyTF{#1}
     { \begin{@corollary}[#1] }
     { \begin{@corollary} }
-    \IfValueT{#2}{ \label{cor:#2} }
+    \IfNotEmptyT{#2}{ \label{cor:#2} }
 }{ \end{@corollary} }
 
 % Lemma
 \NewDocumentEnvironment{lemma}{oo}
 { 
-    \IfValueTF{#1}
+    \IfNotEmptyTF{#1}
     { \begin{@lemma}[#1] }
     { \begin{@lemma} }
-    \IfValueT{#2}{ \label{lem:#2} }
+    \IfNotEmptyT{#2}{ \label{lem:#2} }
 }{ \end{@lemma} }
 
 % Definition
 \NewDocumentEnvironment{definition}{oo}
 { 
-    \IfValueTF{#1}
+    \IfNotEmptyTF{#1}
     { \begin{@definition}[#1] }
     { \begin{@definition} }
-    \IfValueT{#2}{ \label{def:#2} }
+    \IfNotEmptyT{#2}{ \label{def:#2} }
 }{ \end{@definition} }
 
 % Remark
 \NewDocumentEnvironment{remark}{O{} o}
 { 
-    \IfValueTF{#1}
+    \IfNotEmptyTF{#1}
     { \begin{@remark}[#1] }
     { \begin{@remark} }
-    \IfValueT{#2}{ \label{rem:#2} }
+    \IfNotEmptyT{#2}{ \label{rem:#2} }
 }{ \end{@remark} }
 
 % Example
 \NewDocumentEnvironment{example}{O{} o}
 { 
-    \IfValueTF{#1}
+    \IfNotEmptyTF{#1}
     { \begin{@example}[#1] }
     { \begin{@example} }
-    \IfValueT{#2}{ \label{exmpl:#2} }
+    \IfNotEmptyT{#2}{ \label{exmpl:#2} }
 }{ \end{@example} }
 
 % Exercise
 \NewDocumentEnvironment{exercise}{O{} o}
 { 
-    \IfValueTF{#1}
+    \IfNotEmptyTF{#1}
     { \begin{@exercise}[#1] }
     { \begin{@exercise} }
-    \IfValueT{#2}{ \label{ex:#2} }
+    \IfNotEmptyT{#2}{ \label{ex:#2} }
 }{ \end{@exercise} }
 
 % Solution
 \NewDocumentEnvironment{solution}{O{} o}
 { 
-    \IfValueTF{#1}
+    \IfNotEmptyTF{#1}
     { \begin{@solution}[#1] }
     { \begin{@solution} }
-    \IfValueT{#2}{ \label{sol:#2} }
+    \IfNotEmptyT{#2}{ \label{sol:#2} }
 }{ \end{@solution} }
 
 % Notation
 \NewDocumentEnvironment{notation}{O{} o}
 { 
-    \IfValueTF{#1}
+    \IfNotEmptyTF{#1}
     { \begin{@notation}[#1] }
     { \begin{@notation} }
-    \IfValueT{#2}{ \label{sol:#2} }
+    \IfNotEmptyT{#2}{ \label{sol:#2} }
 }{ \end{@notation} }
 
 \endinput
