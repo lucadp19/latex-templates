@@ -74,14 +74,14 @@
 
 \ifthenelse{\equal{\preamble@thmstyle}{boxed}}{%
     \ifpreamble@colors
-        \usepackage[colors]{boxedthm}
+        \usepackage[colors]{boxed-thm}
     \else
-        \usepackage{boxedthm}
+        \usepackage{boxed-thm}
     \fi
 }{}
 
-\ifthenelse{\equal{\preamble@thmstyle}{professional}}{%
-    \usepackage{professionalthm}
+\ifthenelse{\equal{\preamble@thmstyle}{simple}}{%
+    \usepackage{simple-thm}
 }{}
 
 % \ifthenelse{\equal{\preamble@thmstyle}{coloredboxthm}}{%

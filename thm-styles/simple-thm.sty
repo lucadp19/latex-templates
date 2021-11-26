@@ -1,3 +1,17 @@
+\usepackage{kvoptions}
+\SetupKeyvalOptions{
+    family=simple,
+    prefix=simple@,
+}
+\DeclareBoolOption[false]{colors}
+\ProcessKeyvalOptions*
+
+\ifsimple@colors
+    \usepackage[colors]{thm-colors-names}
+\else
+    \usepackage{thm-colors-names}
+\fi
+
 \renewenvironment{proof}[1][\proofname]
     {\par\pushQED{\qed}%
     \normalfont 
@@ -31,11 +45,10 @@
     postheadspace=10pt
 ]{thmstyle}
 \declaretheorem[numberwithin=section, style=thmstyle]{principle}
-\declaretheorem[name=Teorema, numberwithin=section, style=thmstyle]{theorem}
-\declaretheorem[name=Assioma, sibling=theorem, style=thmstyle]{axiom}
-\declaretheorem[name=Corollario, sibling=theorem, style=thmstyle]{corollary}
-\declaretheorem[name=Proposizione, sibling=theorem, style=thmstyle]{proposition}
-\declaretheorem[name=Lemma, sibling=theorem, style=thmstyle]{lemma}
+\declaretheorem[name=\@thmtitle, numberwithin=section, style=thmstyle]{theorem}
+\declaretheorem[name=\@cortitle, sibling=theorem, style=thmstyle]{corollary}
+\declaretheorem[name=\@proptitle, sibling=theorem, style=thmstyle]{proposition}
+\declaretheorem[name=\@lemtitle, sibling=theorem, style=thmstyle]{lemma}
 
 
 % <* defstyle *> %
@@ -50,7 +63,7 @@
     % qed={$\lrcorner$},
     postheadspace=10pt
 ]{defstyle}
-\declaretheorem[name=Definizione, sibling=theorem, style=defstyle]{definition}
+\declaretheorem[name=\@deftitle, sibling=theorem, style=defstyle]{definition}
 
 % <* exmplstyle *> %
 \declaretheoremstyle[
@@ -61,7 +74,7 @@
     % qed={$\lrcorner$},
     postheadspace=1em
 ]{exmplstyle}
-\declaretheorem[name=Esempio, sibling=theorem, style=exmplstyle]{example}
+\declaretheorem[name=\@exmpltitle, sibling=theorem, style=exmplstyle]{example}
 
 % <* exercisestyle *> %
 \declaretheoremstyle[
@@ -74,7 +87,7 @@
     % qed={$\lrcorner$},
     postheadspace=10pt
 ]{exercisestyle}
-\declaretheorem[name=Esercizio, sibling=theorem, style=exercisestyle]{exercise}
+\declaretheorem[name=\@exrctitle, sibling=theorem, style=exercisestyle]{exercise}
 
 % <* solutionstyle *> %
 \declaretheoremstyle[
@@ -87,7 +100,7 @@
     qed={$\lrcorner$},
     postheadspace=10pt
 ]{solutionstyle}
-\declaretheorem[name=Soluzione, style=solutionstyle, numbered=no]{solution}
+\declaretheorem[name=\@soltitle, style=solutionstyle, numbered=no]{solution}
 \declaretheorem[name=Intuizione, style=solutionstyle, numbered=no]{intuition}
 
 % <* remarkstyle *> %
@@ -98,7 +111,7 @@
     bodyfont=\normalfont\normalsize,
     postheadspace=1em
 ]{remarkstyle}
-\declaretheorem[name=Osservazione, style=remarkstyle, numberwithin=section]{remark}
+\declaretheorem[name=\@remtitle, style=remarkstyle, numberwithin=section]{remark}
 
 % <* notationstyle *> %
 \declaretheoremstyle[
@@ -108,6 +121,6 @@
     bodyfont=\normalfont\normalsize,
     postheadspace=1em
 ]{notationstyle}
-\declaretheorem[name=Notazione, style=notationstyle, numbered=no]{notation}
+\declaretheorem[name=\@notationtitle, style=notationstyle, numbered=no]{notation}
 
 \endinput

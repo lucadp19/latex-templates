@@ -1,0 +1,61 @@
+\colorlet{LightGray}{Gray!55!Gray}
+
+\usepackage{kvoptions}
+\SetupKeyvalOptions{
+    family=thms,
+    prefix=thms@,
+}
+\DeclareBoolOption[false]{colors}
+
+\newcommand{\@defcolor}{Gray}
+\newcommand{\@thmcolor}{Gray}
+\newcommand{\@propcolor}{Gray}
+\newcommand{\@remcolor}{Gray}
+\newcommand{\@proofcolor}{Gray}
+
+\newcommand{\@deftitlecolor}{}
+\newcommand{\@thmtitlecolor}{}
+\newcommand{\@proptitlecolor}{}
+\newcommand{\@remtitlecolor}{}
+\newcommand{\@prooftitlecolor}{}
+
+\newcommand{\@deftitle}{Definition}
+\newcommand{\@thmtitle}{Theorem}
+\newcommand{\@proptitle}{Proposition}
+\newcommand{\@lemtitle}{Lemma}
+\newcommand{\@remtitle}{Remark}
+\newcommand{\@exmpltitle}{Example}
+\newcommand{\@exrctitle}{Exercise}
+\newcommand{\@soltitle}{Solution}
+\newcommand{\@notationtitle}{Notation}
+
+\iflanguage{italian}
+{   
+    \renewcommand{\@deftitle}{Definizione}
+    \renewcommand{\@thmtitle}{Teorema}
+    \renewcommand{\@proptitle}{Proposizione}
+    \renewcommand{\@lemtitle}{Lemma}
+    \renewcommand{\@remtitle}{Osservazione}
+    \renewcommand{\@exmpltitle}{Esempio}
+    \renewcommand{\@exrctitle}{Esercizio}
+    \renewcommand{\@soltitle}{Soluzione}
+    \renewcommand{\@notationtitle}{Notazione}
+}
+
+
+\ProcessKeyvalOptions*
+
+\ifthms@colors
+    \renewcommand{\@defcolor}{Green}
+    \renewcommand{\@thmcolor}{BrickRed}
+    \renewcommand{\@propcolor}{BrickRed}
+    \renewcommand{\@remcolor}{RoyalBlue}
+    \renewcommand{\@proofcolor}{BrickRed}
+
+    \renewcommand{\@deftitlecolor}{\color{Green}}
+    \renewcommand{\@thmtitlecolor}{\color{BrickRed}}
+    \renewcommand{\@proptitlecolor}{\color{BrickRed}}
+    \renewcommand{\@remtitlecolor}{\color{RoyalBlue}}
+    \renewcommand{\@prooftitlecolor}{\color{BrickRed}}
+\fi
+

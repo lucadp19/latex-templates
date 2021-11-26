@@ -1,50 +1,18 @@
-\colorlet{LightGray}{Gray!55!Gray}
-\newcounter{thm}[section]
-
 \usepackage{kvoptions}
 \SetupKeyvalOptions{
-    family=box,
-    prefix=box@,
+    family=boxed,
+    prefix=boxed@,
 }
-
-\newcommand{\@defcolor}{Gray}
-\newcommand{\@thmcolor}{Gray}
-\newcommand{\@propcolor}{Gray}
-\newcommand{\@remcolor}{Gray}
-\newcommand{\@proofcolor}{Gray}
-
-\newcommand{\@deftitlecolor}{}
-\newcommand{\@thmtitlecolor}{}
-\newcommand{\@proptitlecolor}{}
-\newcommand{\@remtitlecolor}{}
-\newcommand{\@prooftitlecolor}{}
-
-\newcommand{\@deftitle}{Definition}
-\newcommand{\@thmtitle}{Theorme}
-\newcommand{\@proptitle}{Proposition}
-\newcommand{\@lemtitle}{Lemma}
-\newcommand{\@remtitle}{Remark}
-
-
 \DeclareBoolOption[false]{colors}
-
 \ProcessKeyvalOptions*
 
-\ifbox@colors
-    \renewcommand{\@defcolor}{Green}
-    \renewcommand{\@thmcolor}{BrickRed}
-    \renewcommand{\@propcolor}{BrickRed}
-    \renewcommand{\@remcolor}{RoyalBlue}
-    \renewcommand{\@proofcolor}{BrickRed}
-
-    \renewcommand{\@deftitlecolor}{\color{Green}}
-    \renewcommand{\@thmtitlecolor}{\color{BrickRed}}
-    \renewcommand{\@proptitlecolor}{\color{BrickRed}}
-    \renewcommand{\@remtitlecolor}{\color{RoyalBlue}}
-    \renewcommand{\@prooftitlecolor}{\color{BrickRed}}
+\ifboxed@colors
+    \usepackage[colors]{thm-colors-names}
+\else
+    \usepackage{thm-colors-names}
 \fi
 
-
+\newcounter{thm}[section]
 \tcbset{
     defstyle/.style={
         breakable,
@@ -107,24 +75,23 @@
 }
 
 
-\newtcbtheorem[number within=section, use counter=thm]{theorem}{Teorema}{
+\newtcbtheorem[number within=section, use counter=thm]{theorem}{\@thmtitle}{
     thmstyle,
     label type=theorem
 }{th}
-\newtcbtheorem[number within=section, use counter=thm]{lemma}{Lemma}{
+\newtcbtheorem[number within=section, use counter=thm]{lemma}{\@lemtitle}{
     propstyle,
     label type=lemma
 }{lem}
-\newtcbtheorem[number within=section, use counter=thm]{proposition}{Proposizione}{
+\newtcbtheorem[number within=section, use counter=thm]{proposition}{\@proptitle}{
     propstyle,
     label type=proposition
 }{prop}
-\newtcbtheorem[number within=section, use counter=thm]{corollary}{Corollario}{
+\newtcbtheorem[number within=section, use counter=thm]{corollary}{\@cortitle}{
     propstyle,
     label type=corollary
 }{cor}
-
-\newtcbtheorem[number within=section, use counter=thm]{definition}{Definizione}{
+\newtcbtheorem[number within=section, use counter=thm]{definition}{\@deftitle}{
     defstyle,
     label type=definition
 }{def}
@@ -138,7 +105,7 @@
     % qed={$\lrcorner$},
     postheadspace=1em
 ]{exmplstyle}
-\declaretheorem[name=Esempio, sibling=thm, style=exmplstyle]{example}
+\declaretheorem[name=\@exmpltitle, sibling=thm, style=exmplstyle]{example}
 
 % <* exercisestyle *> %
 \declaretheoremstyle[
@@ -149,7 +116,7 @@
     % qed={$\lrcorner$},
     postheadspace=1em
 ]{exercisestyle}
-\declaretheorem[name=Esercizio, sibling=thm, style=exercisestyle]{exercise}
+\declaretheorem[name=\@exrctitle, sibling=thm, style=exercisestyle]{exercise}
 
 % <* solutionstyle *> %
 \declaretheoremstyle[
@@ -162,7 +129,7 @@
     qed={$\lrcorner$},
     postheadspace=10pt
 ]{solutionstyle}
-\declaretheorem[name=Soluzione, style=solutionstyle, numbered=no]{solution}
+\declaretheorem[name=\@soltitle, style=solutionstyle, numbered=no]{solution}
 \declaretheorem[name=Intuizione, style=solutionstyle, numbered=no]{intuition}
 
 % <* remarkstyle *> %
@@ -173,7 +140,7 @@
     bodyfont=\normalfont\normalsize,
     postheadspace=1em
 ]{remarkstyle}
-\declaretheorem[name=Osservazione, style=remarkstyle, numberwithin=section]{remark}
+\declaretheorem[name=\@remtitle, style=remarkstyle, numberwithin=section]{remark}
 
 % <* notationstyle *> %
 \declaretheoremstyle[
@@ -183,7 +150,7 @@
     bodyfont=\normalfont\normalsize,
     postheadspace=1em
 ]{notationstyle}
-\declaretheorem[name=Notazione, style=notationstyle, numbered=no]{notation}
+\declaretheorem[name=\@notationtitle, style=notationstyle, numbered=no]{notation}
 
 \renewenvironment{proof}[1][\proofname]
     {\par\pushQED{\qed}%
@@ -208,7 +175,7 @@
 % \newcommand{\@proofnamefont}{\bfseries\sffamily\@prooftitlecolor}
 % \xpatchcmd{\proof}{\itshape}{\normalfont\@proofnamefont}{}{}
 
-\ifbox@colors
+\ifboxed@colors
     \tcolorboxenvironment{proof}{
         empty,
         frame empty,
