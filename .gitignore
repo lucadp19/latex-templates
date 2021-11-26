@@ -1,0 +1,12 @@
+math-areas/analysis.sty
+math-areas/probability.sty
+math-areas/topology.sty
+math-areas/prog.sty
+math-areas/numerical.sty
+
+thm-styles/coloredboxthm.sty
+thm-styles/defthm.sty
+thm-styles/marginnamethm.sty
+
+modernth.cls
+smart-thesis.sty

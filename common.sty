@@ -1,0 +1,501 @@
+\usepackage{amsmath, amsthm, amssymb, cases, mathtools, nicefrac} % general math
+\usepackage{stmaryrd}               % for \trianglelefteqslant and to create \xmapsfrom
+\usepackage{array, multicol}
+\usepackage{centernot}              % for \centernot
+\usepackage[makeroom]{cancel}  
+\usepackage{xparse}
+\usepackage{xpatch}                 % to patch sqrt
+\usepackage[shortlabels]{enumitem}
+\usepackage{float}
+\usepackage{letltxmacro}
+\usepackage{geometry}
+\usepackage{standalone}
+
+\ifpdf
+    % otherwise loading bm gives "too many math alphabets"
+    \newcommand\bmmax{0}
+    \newcommand\hmmax{0}
+    
+    \usepackage{bm}
+    \providecommand{\mathbold}{\boldsymbol}
+    \renewcommand{\vec}[1]{\mathbold{#1}}
+\fi
+\ifxetex
+    \renewcommand{\vec}[1]{\symbf{#1}}
+\fi
+
+\LetLtxMacro\amsproof\proof
+\LetLtxMacro\amsendproof\endproof
+
+% To modify theorems' style
+\usepackage{thmtools, thm-restate}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage[most]{tcolorbox}
+
+% for commutative diagrams
+\usepackage{tikz-cd}
+\usetikzlibrary{shapes}
+
+% to plot things
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17} % otherwise I'd get a warning
+
+% <******************************************************> %
+% <****************** GENERAL COMMANDS ******************> %
+% <******************************************************> %
+
+% To work with systems of equations
+\newcolumntype{z}{r<{{}}}
+\newcolumntype{o}{@{}>{{}}c<{{}}@{}}
+
+% Strong emphasis
+\DeclareDocumentCommand{\strong}{m}{\@strong{#1}}
+\newcommand{\@@strong}[1]{\textbf{\let\@strong\@@@strong#1}}
+\newcommand{\@@@strong}[1]{\textnormal{\let\@strong\@@strong#1}}
+\let\@strong\@@strong
+
+% Blue-colored strong for greater emphasis
+\newcommand{\sstrong}[1]{\textcolor{RoyalBlue}{\strong{#1}}}
+
+% <****** SET THEORY ******> $
+\newcommand{\given}{}
+\newcommand{\ColonGiven}{
+    \nonscript\> : \allowbreak\nonscript\>\mathopen{}
+} % ES: { x : x > 0 }
+
+\newcommand{\StupidBarGiven}{
+    \nonscript\; \vert  \allowbreak\nonscript\;\mathopen{}
+}
+
+\newcommand{\BarGiven}{
+    \nonscript\; \delimsize\vert \allowbreak\nonscript\;\mathopen{}
+    % \nonscript\; \delimsize\vert \allowbreak\nonscript\;\mathopen{}
+} % ES: { x | x > 0 }
+
+% To create a new set, just use $\set{x, y}$ or $\set{x \given x > 0}$
+\DeclarePairedDelimiterX{\set}[1]{\{}{\}}{\,\Set@rgs{#1}\,}
+\NewDocumentCommand{\Set@rgs}{>{\SplitArgument{1}{\given}}m}{\Set@rgs@ux#1}
+\NewDocumentCommand{\Set@rgs@ux}{mm}{
+    \IfNoValueTF{#2}{
+        #1
+    } {
+        #1 \ColonGiven #2 % change to \BarGiven to get the bar
+    }
+}
+
+% Other set-related symbols
+\DeclarePairedDelimiterXPP{\powerset}[1]{\mathcal{P}}(){}{#1}
+\NewDocumentCommand{\card}{t+ s o m}{
+    \IfBooleanTF{#1}
+        {\#{#4}}
+        {
+            \IfBooleanTF{#2}
+                {\abs*{#4}}
+                {\abs[#3]{#4}}
+        }
+}
+\newcommand{\union}{\cup}                       % set union
+\newcommand{\inters}{\cap}                      % set intersection
+\newcommand{\bigunion}{\bigcup}                 % big set union
+\newcommand{\biginters}{\bigcap}                % big set union
+\newcommand{\disjunion}{\sqcup}                 % disjoint union
+\newcommand{\bigdisjunion}{\bigsqcup}           % big disjoint union
+\newcommand{\compl}{^C}                         % set complement
+
+% Intervals
+\NewDocumentCommand{\interval}{ s m >{\SplitArgument{1}{,}}m m o }{
+    \IfBooleanTF{#1}{
+        \left#2 \@IntervArgs #3 \right#4
+    }{
+        \IfValueTF{#5}{
+            #5{#2} \@IntervArgs #3 #5{#4}
+        }{
+            #2 \@IntervArgs #3 #4
+        }
+    }
+}
+\NewDocumentCommand{\@IntervArgs}{mm}{#1, \, #2}
+
+% Greek letters
+\renewcommand{\epsilon}{\varepsilon}
+\newcommand{\eps}{\epsilon}
+\renewcommand{\theta}{\vartheta}
+\ifpdf
+    \renewcommand{\rho}{\varrho}
+\fi
+\AtBeginDocument{%      otherwise xelatex doesn't swap them
+    \let\oldphi\phi
+    \let\phi\varphi
+    \newcommand{\eulerphi}{\oldphi}
+}
+
+% Useful general paired delimiters
+\DeclarePairedDelimiter{\parens}{(}{)}
+\DeclarePairedDelimiter{\squared}{[}{]}
+\DeclarePairedDelimiter{\dbracket}{\llbracket}{\rrbracket}
+\DeclarePairedDelimiter{\curly}{\{}{\}}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}   % absolute value
+\DeclarePairedDelimiter{\ang}{\langle}{\rangle} % angular parenthesis
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\NewDocumentCommand{\norm}{sog}{                % norm (with automatic \cdot inside if empty)
+    \IfValueTF{#3}{
+        \IfBooleanTF{#1}{
+            \norm@delim*{#3}
+        }{
+            \norm@delim[#2]{#3}
+        }
+    }{
+        \norm@delim{\cdot}
+    }
+}
+\DeclarePairedDelimiter{\norm@delim}{\lVert}{\rVert}
+
+% patching sqrt
+\LetLtxMacro{\oldsqrt}{\sqrt}
+\RenewDocumentCommand{\sqrt}{o m}{%
+    \IfValueTF{#1}{%
+        \oldsqrt[\leftroot{-2}\uproot{2}#1]{#2}\,%
+    }{%
+        \oldsqrt{#2}\,%
+    }%
+}
+% \xpatchcmd{\sqrt}{\@sqrt}{{\mspace{-2.9274mu}\@sqrt}}{}{}
+
+% Modified equals
+\newcommand{\deq}{\coloneqq}
+\newcommand{\iseq}{\overset{?}{=}}
+\newcommand{\seteq}{\overset{!}{=}}
+
+% General function stuff
+\newcommand{\@xmapsfrom}[2][]{%
+    \ext@arrow3095\leftarrowfill@{#1}{#2}\mapsfromchar
+}
+\DeclareDocumentCommand{\mapsfrom}{o g}{
+    \IfValueTF{#1}{
+        \IfValueTF{#2}{
+            \@xmapsfrom{#1}{#2}
+        }{
+            \@xmapsfrom{#1}
+        }
+    }{
+        \IfValueTF{#2}{
+            \@xmapsfrom{#2}
+        }{
+            \@xmapsfrom{}
+        }
+    }
+}
+\NewDocumentCommand{\embeds}{o g}{
+    \IfValueTF{#1}{
+        \IfValueTF{#2}{
+            \xhookrightarrow[#1]{#2}
+        }{
+            \xhookrightarrow{#1}
+        }
+    }{
+        \IfValueTF{#2}{
+            \xhookrightarrow{#2}
+        }{
+            \xhookrightarrow{}
+        }
+    }
+}
+\NewDocumentCommand{\biject}{o g}{
+    \IfValueTF{#1}{
+        \IfValueTF{#2}{
+            \xleftrightarrow[#1]{#2}
+        }{
+            \xleftrightarrow{#1}
+        }
+    }{
+        \IfValueTF{#2}{
+            \xleftrightarrow{#2}
+        }{
+            \xleftrightarrow{}
+        }
+    }
+}
+\NewDocumentCommand{\iso}{g}{
+    \IfValueTF{#1}{
+        \xrightarrow[\raisebox{0.55em}{\smash{\ensuremath{\sim}}}]{#1}
+    }{
+        \xrightarrow{\raisebox{-1ex}[0ex][0ex]{$\sim$}}
+    }
+}
+\newcommand{\IsomTo}{\xrightarrow{\raisebox{-1ex}[0ex][0ex]{$\sim$}}}
+
+\DeclareMathOperator{\id}{id}               % identity function
+\newcommand{\inv}{^{-1}}                    % inverse
+\NewDocumentCommand{\Imm}{sog}{             % image of a function
+    \operatorname{Im}
+    \IfValueT{#3}{
+        \IfBooleanTF{#1}{
+            \parens*{#3}
+        }{
+            \parens[#2]{#3}
+        }
+    }
+} 
+\newcommand\restrict[1]                     % function restriction
+    {\raisebox{-.5ex}{$|$}_{#1}}
+\NewDocumentCommand{\sgn}{sog}{             % sign function
+    \operatorname{sgn}
+    \IfValueT{#3}{
+        \IfBooleanTF{#1}{
+            \parens*{#3}
+        } {
+            \parens[#2]{#3}
+        }
+    }
+}
+
+%%% Complex numbers
+\let\oldre\Re
+\let\oldim\Im
+\let\Re\relax
+\let\Im\relax
+\DeclareDocumentCommand{\Re}{sog}{             % real part
+    \operatorname{Re}
+    \IfValueT{#3}{
+        \IfBooleanTF{#1}{
+            \parens*{#3}
+        }{
+            \parens[#2]{#3}
+        }
+    }
+}
+\DeclareDocumentCommand{\Im}{sog}{             % imaginary part
+    \operatorname{Im}
+    \IfValueT{#3}{
+        \IfBooleanTF{#1}{
+            \parens*{#3}
+        }{
+            \parens[#2]{#3}
+        }
+    }
+}
+\newcommand{\conj}[1]{\overline{#1}}            % complex conjugate
+
+% Modular arithmetic
+\def\localbig#1#2{%  % used for (n)dividesaux just below
+  \sbox\z@{$\m@th#1
+    \sbox\tw@{$#1()$}%
+    \dimen@=\ht\tw@\advance\dimen@\dp\tw@
+    \nulldelimiterspace\z@\left#2\vcenter to1.2\dimen@{}\right.
+  $}\box\z@}
+
+\newcommand{\divides}{\mathrel{\mathpalette\dividesaux\relax}}
+\newcommand{\ndivides}{\mathrel{\mathpalette\ndividesaux\relax}}
+
+\newcommand{\dividesaux}[2]{\mbox{$\m@th#1\localbig{#1}|$}}
+\newcommand{\ndividesaux}[2]{%
+  \mkern.5mu
+  \ooalign{%
+    \hidewidth$\m@th#1\localbig{#1}|$\hidewidth\cr
+    $\m@th#1\nmid$\cr%
+  }%
+}
+
+\newcommand{\congr}{\equiv}                 % congruent 
+\newcommand{\ncongr}{\not\congr}            % not congruent
+\NewDocumentCommand{\Mod}{t+ som}{          % (mod m) with or without "mod"
+    \;
+    \IfBooleanTF{#1}{
+        \IfBooleanTF{#2}{
+            \parens*{\operatorname{mod} #4}
+        }{
+            \parens[#3]{\operatorname{mod} #4}
+        }
+    }{
+        \IfBooleanTF{#2}{
+            \parens*{#4}
+        }{
+            \parens[#3]{#4}
+        }
+    }
+}     
+\newcommand{\gcdname@}{\operatorname{gcd}}
+\newcommand{\lcmname@}{\operatorname{lcm}}
+\RenewDocumentCommand{\gcd}{t+ som}{        % gcd - greatest common divisor
+    \IfBooleanT{#1}{
+        \gcdname@
+    }
+    \IfBooleanTF{#2}{
+        \parens*{#4}
+    }{
+        \IfNoValueTF{#3}{
+            \parens{#4}
+        }{
+            \parens[#3]{#4}
+        }
+    }
+}
+\NewDocumentCommand{\lcm}{t+ som}{          % lcm - least common multiple
+    \IfBooleanTF{#1}{
+        \lcmname@
+        \IfBooleanTF{#2}{
+            \parens*{#4}
+        }{
+            \IfNoValueTF{#3}{
+                \parens{#4}
+            }{
+                \parens[#3]{#4}
+            }
+        }
+    }{
+        \IfBooleanTF{#2}{
+            \squared*{#4}
+        }{
+            \IfNoValueTF{#3}{
+                \squared{#4}
+            }{
+                \squared[#3]{#4}
+            }
+        }
+    }
+}
+
+\NewDocumentCommand{\eqcl}{t+ s o m e_}{
+    \IfBooleanTF{#1}{
+        \overline{#4}
+    }{
+        \IfBooleanTF{#2}{
+            \squared*{#4}
+        }{
+            \IfNoValueTF{#3}{
+                \squared{#4}
+            }{
+                \squared[#3]{#4}
+            }
+        }
+        \IfValueT{#5}{
+            _{#5}
+        }
+    }
+}
+
+\NewDocumentCommand{\seqn}{s o m e_}{
+    \IfBooleanTF{#1}
+        {\parens*{#3}}
+        {\parens[#2]{#3}}
+    \IfValueT{#4}
+        {_{#4}}
+}
+% \NewDocumentCommand{\EvaluateAt}{t+ s o m}{
+%     \IfBooleanTF{#1}{
+%         \IfBooleanTF{#2}{
+%             \@VertEvaluateAt*{#4}
+%         }{
+%             \@VertEvaluateAt[#3]{#4}
+%         }{
+%             \IfBooleanTF{#2}{
+%                 \@SqEvaluateAt*{#4}
+%             }{
+%                 \@SqEvaluateAt[#3]{#4}
+%             }
+%         }
+%     }
+%     % \IfValueT{#5}{
+%     %     _{#5}
+%     % }
+%     % \IfValueT{#6}{
+%     %     ^{#6}
+%     % }
+% }
+\newcommand{\EvaluateAt}{\@SqEvaluateAt}
+\DeclarePairedDelimiter{\@SqEvaluateAt}[]
+\DeclarePairedDelimiter{\@VertEvaluateAt}{.}{\rvert}
+
+\newcommand{\trans}{^T}                             % transposed
+\newcommand{\ctrans}{^H}                            % complex transposed
+
+\DeclareMathOperator{\tr}{tr}
+\NewDocumentCommand{\Span}{t+ som}{                 % Span of vectors
+    \operatorname{span}
+    \IfBooleanTF{#1}{
+        \IfBooleanTF{#2}{
+            \set*{#4}
+        }{
+            \set[#3]{#4}
+        }
+    }{
+        \IfBooleanTF{#2}{
+            \parens*{#4}
+        }{
+            \parens[#3]{#4}
+        }
+    }
+}
+
+% Widebar
+\ifpdf
+    \DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+    \DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+    \DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+    \DeclareMathAccent{\widebar}{0}{mathx}{"73}
+    \renewcommand{\bar}[1]{\widebar{#1}}
+\fi
+
+\newcommand{\vecbar}[1]{\vec{\bar{#1}}}
+
+% MATHBB LETTERS
+\newcommand{\A}{\mathbb{A}}
+\newcommand{\B}{\mathbb{B}}
+\newcommand{\C}{\mathbb{C}}     % complex numbers
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\F}{\mathbb{F}}     % general field
+\newcommand{\G}{\mathbb{G}} 
+\renewcommand{\H}{\mathbb{H}}   % quaternions
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\J}{\mathbb{J}}
+\newcommand{\K}{\mathbb{K}}     % general field
+\renewcommand{\L}{\mathbb{L}}
+\newcommand{\bL}{\mathbb{L}}
+\newcommand{\M}{\mathbb{M}}
+\newcommand{\N}{\mathbb{N}}     % natural numbers
+\renewcommand{\O}{\mathbb{O}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\Q}{\mathbb{Q}}     % rational numbers
+\newcommand{\R}{\mathbb{R}}     % real numbers
+\renewcommand{\S}{\mathbb{S}}
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\U}{\mathbb{U}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\W}{\mathbb{W}}
+\newcommand{\X}{\mathbb{X}}
+\newcommand{\Y}{\mathbb{Y}}
+\newcommand{\Z}{\mathbb{Z}}     % integers
+\newcommand{\Zmod}[1]{\quot{\Z}{#1\Z}} % integers mod #1
+
+% MATHCAL LETTERS
+\renewcommand{\AA}{\mathcal{A}}
+\newcommand{\BB}{\mathcal{B}}
+\newcommand{\CC}{\mathcal{C}}
+\newcommand{\DD}{\mathcal{D}}
+\newcommand{\EE}{\mathcal{E}}
+\newcommand{\FF}{\mathcal{F}}
+\newcommand{\GG}{\mathcal{G}} 
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\II}{\mathcal{I}}
+\newcommand{\JJ}{\mathcal{J}}
+\newcommand{\KK}{\mathcal{K}}
+\newcommand{\LL}{\mathcal{L}}
+\newcommand{\MM}{\mathcal{M}}
+\newcommand{\NN}{\mathcal{N}}
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\PP}{\mathcal{P}}
+\newcommand{\QQ}{\mathcal{Q}}
+\newcommand{\RR}{\mathcal{R}}
+\renewcommand{\SS}{\mathcal{S}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\TT}{\mathcal{T}}
+\newcommand{\UU}{\mathcal{U}}
+\newcommand{\VV}{\mathcal{V}}
+\newcommand{\WW}{\mathcal{W}}
+\newcommand{\XX}{\mathcal{X}}
+\newcommand{\YY}{\mathcal{Y}}
+\newcommand{\ZZ}{\mathcal{Z}}
+
+\endinput

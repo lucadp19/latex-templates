@@ -1,0 +1,289 @@
+\colorlet{LightGray}{Gray!55!Gray}
+\newcounter{thm}[section]
+
+\usepackage{kvoptions}
+\SetupKeyvalOptions{
+    family=box,
+    prefix=box@,
+}
+
+\newcommand{\@defcolor}{Gray}
+\newcommand{\@thmcolor}{Gray}
+\newcommand{\@propcolor}{Gray}
+\newcommand{\@remcolor}{Gray}
+\newcommand{\@proofcolor}{Gray}
+
+\newcommand{\@deftitlecolor}{}
+\newcommand{\@thmtitlecolor}{}
+\newcommand{\@proptitlecolor}{}
+\newcommand{\@remtitlecolor}{}
+\newcommand{\@prooftitlecolor}{}
+
+\newcommand{\@deftitle}{Definition}
+\newcommand{\@thmtitle}{Theorme}
+\newcommand{\@proptitle}{Proposition}
+\newcommand{\@lemtitle}{Lemma}
+\newcommand{\@remtitle}{Remark}
+
+
+\DeclareBoolOption[false]{colors}
+
+\ProcessKeyvalOptions*
+
+\ifbox@colors
+    \renewcommand{\@defcolor}{Green}
+    \renewcommand{\@thmcolor}{BrickRed}
+    \renewcommand{\@propcolor}{BrickRed}
+    \renewcommand{\@remcolor}{RoyalBlue}
+    \renewcommand{\@proofcolor}{BrickRed}
+
+    \renewcommand{\@deftitlecolor}{\color{Green}}
+    \renewcommand{\@thmtitlecolor}{\color{BrickRed}}
+    \renewcommand{\@proptitlecolor}{\color{BrickRed}}
+    \renewcommand{\@remtitlecolor}{\color{RoyalBlue}}
+    \renewcommand{\@prooftitlecolor}{\color{BrickRed}}
+\fi
+
+
+\tcbset{
+    defstyle/.style={
+        breakable,
+        enhanced,
+        % frame empty,
+        % interior empty,
+        colframe=\@defcolor!70!white,
+        coltitle=black!100!black,
+        fonttitle=\large\bfseries\sffamily\@deftitlecolor ,
+        description font=\normalsize\normalfont\sffamily\color{Black},
+        colbacktitle= \@defcolor!5!white,
+        colback=\@defcolor!0!White,
+        % borderline={0.5mm}{0mm}{\@defcolor!15!white},
+        % borderline={0.5mm}{0mm}{\@defcolor!50!white,dashed},
+        attach boxed title to top left={xshift=2mm, yshift=-2mm},
+        boxed title style={boxrule=0.4pt},
+        varwidth boxed title,
+        separator sign dash,
+        before upper={\parindent11pt\noindent}
+    },
+    thmstyle/.style={
+        breakable,
+        enhanced,
+        % frame empty,
+        % interior empty,
+        colframe=\@thmcolor!70!\@thmcolor,
+        coltitle=black!100!black,
+        fonttitle=\large\sffamily\bfseries\@thmtitlecolor ,
+        description font=\normalsize\normalfont\sffamily\color{Black},
+        colbacktitle=\@thmcolor!5!white,
+        colback=\@thmcolor!2!White,
+        % borderline north={0.5mm}{0mm}{\@thmcolor},
+        % borderline south={0.5mm}{0mm}{\@thmcolor},
+        attach boxed title to top center={yshift=-2mm},
+        boxed title style={boxrule=0.4pt},
+        varwidth boxed title,
+        separator sign dash,
+        before upper={\parindent11pt\noindent}
+    },
+    propstyle/.style={
+        breakable,
+        enhanced,
+        % frame empty,
+        % interior empty,
+        % theorem style=break,
+        colframe=\@propcolor!70!\@propcolor,
+        coltitle=black!100!black,
+        fonttitle=\large\bfseries\sffamily\@proptitlecolor ,
+        description font=\normalsize\normalfont\sffamily\color{Black},
+        colbacktitle=\@propcolor!5!White,
+        colback=\@propcolor!0!White,
+        % borderline north={0.5mm}{0mm}{\@propcolor!50!white,dashed},
+        % borderline south={0.5mm}{0mm}{\@propcolor!50!white,dashed},
+        attach boxed title to top left={xshift=2mm, yshift=-2mm},
+        boxed title style={boxrule=0.4pt},
+        varwidth boxed title,
+        separator sign dash,
+        before upper={\parindent11pt\noindent}
+    },
+}
+
+
+\newtcbtheorem[number within=section, use counter=thm]{theorem}{Teorema}{
+    thmstyle,
+    label type=theorem
+}{th}
+\newtcbtheorem[number within=section, use counter=thm]{lemma}{Lemma}{
+    propstyle,
+    label type=lemma
+}{lem}
+\newtcbtheorem[number within=section, use counter=thm]{proposition}{Proposizione}{
+    propstyle,
+    label type=proposition
+}{prop}
+\newtcbtheorem[number within=section, use counter=thm]{corollary}{Corollario}{
+    propstyle,
+    label type=corollary
+}{cor}
+
+\newtcbtheorem[number within=section, use counter=thm]{definition}{Definizione}{
+    defstyle,
+    label type=definition
+}{def}
+
+% <* exmplstyle *> %
+\declaretheoremstyle[
+    spaceabove=\topsep, spacebelow=\topsep,
+    headfont=\sffamily\bfseries\@remtitlecolor,
+    notefont=\normalfont\sffamily\normalsize\color{Black}, notebraces={(}{)},
+    bodyfont=\normalfont\normalsize,
+    % qed={$\lrcorner$},
+    postheadspace=1em
+]{exmplstyle}
+\declaretheorem[name=Esempio, sibling=thm, style=exmplstyle]{example}
+
+% <* exercisestyle *> %
+\declaretheoremstyle[
+    spaceabove=\topsep, spacebelow=\topsep,
+    headfont=\sffamily\bfseries\@remtitlecolor,
+    notefont=\normalfont\sffamily\normalsize\color{Black}, notebraces={(}{)},
+    bodyfont=\normalfont\normalsize,
+    % qed={$\lrcorner$},
+    postheadspace=1em
+]{exercisestyle}
+\declaretheorem[name=Esercizio, sibling=thm, style=exercisestyle]{exercise}
+
+% <* solutionstyle *> %
+\declaretheoremstyle[
+    spaceabove=\topsep, spacebelow=\topsep,
+    headfont=\sffamily\bfseries\@remtitlecolor,
+    notefont=\normalfont\normalsize\sffamily\color{Black}, notebraces={(}{)},
+    bodyfont=\normalfont\normalsize,
+    headformat={\NAME \NOTE},
+    headpunct={},
+    qed={$\lrcorner$},
+    postheadspace=10pt
+]{solutionstyle}
+\declaretheorem[name=Soluzione, style=solutionstyle, numbered=no]{solution}
+\declaretheorem[name=Intuizione, style=solutionstyle, numbered=no]{intuition}
+
+% <* remarkstyle *> %
+\declaretheoremstyle[
+    spaceabove=\topsep, spacebelow=\topsep,
+    headfont=\sffamily\bfseries\@remtitlecolor,
+    notefont=\normalfont\normalsize\sffamily\color{Black}, notebraces={(}{)},
+    bodyfont=\normalfont\normalsize,
+    postheadspace=1em
+]{remarkstyle}
+\declaretheorem[name=Osservazione, style=remarkstyle, numberwithin=section]{remark}
+
+% <* notationstyle *> %
+\declaretheoremstyle[
+    spaceabove=\topsep, spacebelow=\topsep,
+    headfont=\sffamily\bfseries\@remtitlecolor,
+    notefont=\normalfont\normalsize\sffamily\color{Black}, notebraces={(}{)},
+    bodyfont=\normalfont\normalsize,
+    postheadspace=1em
+]{notationstyle}
+\declaretheorem[name=Notazione, style=notationstyle, numbered=no]{notation}
+
+\renewenvironment{proof}[1][\proofname]
+    {\par\pushQED{\qed}%
+    \normalfont 
+    \topsep1\p@\@plus6\p@\relax
+    \trivlist
+    % \list{}{\leftmargin=.5em
+    %     \rightmargin=\leftmargin
+    %     \settowidth{\itemindent}{\itshape#1}%
+    %     \labelwidth=\itemindent
+    %     % the following line is not needed with amsart, but might be with other classes
+    %     \parsep=0pt \listparindent=\parindent 
+    % }
+    \item[\hskip\labelsep
+        %  \scshape
+        \bfseries
+        \sffamily
+        \@prooftitlecolor
+        #1\@addpunct{.\hspace{0.7em}}]\ignorespaces}
+    {\popQED\endlist\@endpefalse}
+
+% \newcommand{\@proofnamefont}{\bfseries\sffamily\@prooftitlecolor}
+% \xpatchcmd{\proof}{\itshape}{\normalfont\@proofnamefont}{}{}
+
+\ifbox@colors
+    \tcolorboxenvironment{proof}{
+        empty,
+        frame empty,
+        interior empty, 
+        breakable,
+        borderline west={0.5mm}{0.5mm}{\@proofcolor!80!white},
+        before upper={\parindent11pt}
+    }
+    
+    \tcolorboxenvironment{example}{
+        empty,
+        enhanced,
+        frame empty,
+        % interior empty, 
+        sharp corners=west,
+        breakable,
+        colframe=White!0!White,
+        colback=\@remcolor!8!White,
+        borderline={0mm}{0mm}{White},
+        borderline west={0.5mm}{0.5mm}{\@remcolor!50!White},
+        before upper={\parindent11pt}
+    }
+
+    \tcolorboxenvironment{remark}{
+        breakable,
+        enhanced,
+        frame empty,
+        % interior empty,
+        sharp corners=west,
+        colframe=White!0!White,
+        colback=\@remcolor!8!White,
+        borderline={0mm}{0mm}{White},
+        borderline west={0.5mm}{0mm}{\@remcolor!50!White},
+        before upper={\parindent11pt}
+    }
+
+    \tcolorboxenvironment{exercise}{
+        breakable,
+        enhanced,
+        frame empty,
+        % interior empty,
+        sharp corners=west,
+        colframe=White!0!White,
+        colback=\@remcolor!8!White,
+        borderline={0mm}{0mm}{White},
+        borderline west={0.7mm}{0mm}{\@remcolor!70!White},
+        before upper={\parindent11pt},
+        after={\par\nointerlineskip}
+    }
+
+    \tcolorboxenvironment{solution}{
+        breakable,
+        enhanced,
+        frame empty,
+        % interior empty,
+        sharp corners=west,
+        colframe=White!0!White,
+        colback=\@remcolor!8!White,
+        borderline={0mm}{0mm}{White},
+        borderline west={0.5mm}{0mm}{\@remcolor!50!White},
+        before upper={\parindent11pt}
+    }
+
+    \tcolorboxenvironment{notation}{
+        breakable,
+        enhanced,
+        frame empty,
+        % interior empty,
+        sharp corners=west,
+        colframe=White!0!White,
+        colback=\@remcolor!8!White,
+        borderline={0mm}{0mm}{White},
+        borderline west={0.5mm}{0mm}{\@remcolor!50!White},
+        before upper={\parindent11pt}
+    }
+\fi
+
+\endinput
