@@ -135,14 +135,26 @@
 \declaretheorem[name=\@notationtitle, style=notationstyle, numbered=no]{@notation}
 
 % Aliases for cleveref
-\crefalias{@theorem}{theorem}
-\crefalias{@proposition}{proposition}
-\crefalias{@corollary}{corollary}
-\crefalias{@lemma}{lemma}
-\crefalias{@definition}{definition}
-\crefalias{@example}{example}
-\crefalias{@exercise}{exercise}
-\crefalias{@solution}{solution}
+\crefname{@theorem}
+    {\@thmtitle}{\@thmtitleplural}
+\crefname{@proposition}
+    {\@proptitle}{\@proptitleplural}
+\crefname{@corollary}
+    {\@cortitle}{\@cortitleplural}
+\crefname{@lemma}
+    {\@lemtitle}{\@lemtitleplural}
+\crefname{@definition}
+    {\@deftitle}{\@deftitleplural}
+\crefname{@remark}
+    {\@remtitle}{\@remtitleplural}
+\crefname{@example}
+    {\@exmpltitle}{\@exmpltitleplural}
+\crefname{@exercise}
+    {\@exrctitle}{\@exrctitleplural}
+\crefname{@solution}
+    {\@soltitle}{\@soltitleplural}
+\crefname{@notation}
+    {\@notationtitle}{\@notationtitleplural}
 
 %% ---------- INTERFACE ---------- %%
 % The interface is

@@ -165,10 +165,19 @@
 ]{notationstyle}
 \declaretheorem[name=\@notationtitle, style=notationstyle, numbered=no]{@notation}
 
-\crefalias{@remark}{remark}
-\crefalias{@example}{example}
-\crefalias{@exercise}{exercise}
-\crefalias{@solution}{solution}
+% Aliases for cleveref
+\AtEndPreamble{
+\crefname{@remark}
+    {\@remtitle}{\@remtitleplural}
+\crefname{@example}
+    {\@exmpltitle}{\@exmpltitleplural}
+\crefname{@exercise}
+    {\@exrctitle}{\@exrctitleplural}
+\crefname{@solution}
+    {\@soltitle}{\@soltitleplural}
+\crefname{@notation}
+    {\@notationtitle}{\@notationtitleplural}
+}
 
 \renewenvironment{proof}[1][\proofname]
     {\par\pushQED{\qed}%
