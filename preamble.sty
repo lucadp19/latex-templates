@@ -1,0 +1,389 @@
+\usepackage{ifthen}
+
+\usepackage{etoolbox}
+
+%%% PACKAGES 
+\usepackage{amsmath, amsthm, amssymb, cases, mathtools, nicefrac} % general math
+\usepackage{stmaryrd}               % for \trianglelefteqslant and to create \xmapsfrom
+\usepackage{array, multicol}
+\usepackage{xparse}
+\usepackage{xpatch}                 % to patch sqrt
+\usepackage[shortlabels]{enumitem}
+\usepackage{float}
+\usepackage{letltxmacro}
+\usepackage{geometry}
+\usepackage{standalone}
+\usepackage{float}
+\restylefloat{table}
+
+\ifpdf
+    % otherwise loading bm gives "too many math alphabets"
+    \newcommand\bmmax{0}
+    \newcommand\hmmax{0}
+    
+    \usepackage{bm}
+    \providecommand{\mathbold}{\boldsymbol}
+    \renewcommand{\vec}[1]{\mathbold{#1}}
+\fi
+\ifxetex
+    \renewcommand{\vec}[1]{\symbf{#1}}
+\fi
+
+\LetLtxMacro\amsproof\proof
+\LetLtxMacro\amsendproof\endproof
+
+% To modify theorems' style
+\usepackage{thmtools, thm-restate}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage[most]{tcolorbox}
+
+% for commutative diagrams
+\usepackage{tikz-cd}
+\usetikzlibrary{shapes}
+
+% to plot things
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17} % otherwise I'd get a warning
+
+\newcommand{\Nref}[1]{\nameref{#1}~(\labelcref{#1})}
+
+%%% TEXT COMMANDS %%%
+
+% Strong emphasis
+\DeclareDocumentCommand{\strong}{m}{\@strong{#1}}
+\newcommand{\@@strong}[1]{\textbf{\let\@strong\@@@strong#1}}
+\newcommand{\@@@strong}[1]{\textnormal{\let\@strong\@@strong#1}}
+\let\@strong\@@strong
+
+% Blue-colored strong for greater emphasis
+\newcommand{\sstrong}[1]{\textcolor{RoyalBlue}{\strong{#1}}}
+
+%%% PARENTHESIS
+
+\DeclarePairedDelimiter{\parens}{(}{)}
+\DeclarePairedDelimiter{\squared}{[}{]}
+\DeclarePairedDelimiter{\dbracket}{\llbracket}{\rrbracket}
+\DeclarePairedDelimiter{\curly}{\{}{\}}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}   % absolute value
+\DeclarePairedDelimiter{\ang}{\langle}{\rangle} % angular parenthesis
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+
+% Optional delimiters (to be used inside other commands)
+\NewDocumentCommand{\@parens}{sog}{
+  \IfValueT{#3}
+  { 
+    \IfBooleanTF{#1}
+      { \parens*{#3} }
+      { \parens[#2]{#3} }
+  }
+}
+\NewDocumentCommand{\@squared}{sog}{
+  \IfValueT{#3}
+  { 
+    \IfBooleanTF{#1}
+      { \squared*{#3} }
+      { \squared[#2]{#3} }
+  }
+}
+
+\NewDocumentCommand{\norm}{sog}{                % norm (with automatic \cdot inside if empty)
+    \IfValueTF{#3}{
+        \IfBooleanTF{#1}
+          { \norm@delim*{#3} }
+          { \norm@delim[#2]{#3} }
+    }
+    { \norm@delim{\cdot} }
+}
+\DeclarePairedDelimiter{\norm@delim}{\lVert}{\rVert}
+
+%%% SETS %%%
+
+\newcommand{\given}{}
+\newcommand{\@colongiven}{
+    \nonscript\> : \allowbreak\nonscript\>\mathopen{}
+} % ES: { x : x > 0 }
+
+% To create a new set, just use $\set{x, y}$ or $\set{x \given x > 0}$
+\DeclarePairedDelimiterX{\set}[1]\{\}{ %
+    \,\Set@rgs{#1}\, %
+}
+\NewDocumentCommand{\Set@rgs}{>{\SplitArgument{1}{\given}}m}{\Set@rgs@ux#1}
+\NewDocumentCommand{\Set@rgs@ux}{mm}{
+    \IfNoValueTF{#2}
+      { #1 } 
+      { #1 \@colongiven #2 }
+}
+
+\newcommand{\powerset}{\mathcal{P}\parens} % powerset operator
+\newcommand{\card}{\abs}
+
+\newcommand{\union}{\cup}
+\newcommand{\inters}{\cap}
+\newcommand{\bigunion}{\bigcup}
+\newcommand{\biginters}{\bigcap}
+\AtBeginDocument{%
+    \let\temp\coprod
+    \let\coprod\amalg
+    \let\bigcoprod\temp
+}
+
+%%% GREEK LETTERS %%%
+
+\renewcommand{\theta}{\vartheta}
+\ifpdf
+    \renewcommand{\rho}{\varrho}
+\fi
+\AtBeginDocument{%      otherwise xelatex doesn't swap them
+    \let\oldphi\phi
+    \let\phi\varphi
+    \newcommand{\eulerphi}{\oldphi}
+
+    \let\oldeps\epsilon
+    \let\epsilon\varepsilon
+    \newcommand{\eps}{\epsilon}
+}
+
+%%% PATCHES %%%
+
+% Widebar
+\ifpdf
+    \DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+    \DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+    \DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+    \DeclareMathAccent{\widebar}{0}{mathx}{"73}
+    \renewcommand{\bar}[1]{\widebar{#1}}
+\fi
+
+% patching sqrt
+\LetLtxMacro{\oldsqrt}{\sqrt}
+\RenewDocumentCommand{\sqrt}{o m}{%
+    \IfValueTF{#1}{%
+        \oldsqrt[\leftroot{-2}\uproot{2}#1]{#2}\,%
+    }{%
+        \oldsqrt{#2}\,%
+    }%
+}
+
+%%% EQUALITY SIGNS %%%
+
+% Modified equals
+\newcommand{\deq}{\coloneqq}
+\newcommand{\iseq}{\overset{?}{=}}
+\newcommand{\seteq}{\overset{!}{=}}
+
+\newcommand{\htpyeq}{\simeq}
+\newcommand{\isoeq}{\cong}
+
+%%% MAPS %%%
+
+% xmapsfrom
+\newcommand{\xmapsfrom}[2][]{%
+    \ext@arrow3095\leftarrowfill@{#1}{#2}\mapsfromchar
+}
+% xtwoheads
+\newcommand{\xtwoheads}[2][]{
+    \xrightarrow[#1]{#2}\mathrel{\mkern-14mu}\rightarrow
+}
+
+\NewDocumentCommand{\inj}{o g}{ %
+    \IfValueTF{#1}{
+        \IfValueTF{#2}
+          { \xhookrightarrow[#1]{#2} }
+          { \xhookrightarrow{#1} }
+    }{
+        \IfValueTF{#2}
+          { \xhookrightarrow{#2} }
+          { \xhookrightarrow{} }
+    }
+}
+
+\NewDocumentCommand{\epi}{o g}{ %
+    \IfValueTF{#1}{
+        \IfValueTF{#2}
+          { \xtwoheads[#1]{#2} }
+          { \xtwoheads{#1} }
+    }{
+        \IfValueTF{#2}
+          { \xtwoheads{#2} }
+          { \xtwoheads{} }
+    }
+}
+
+\NewDocumentCommand{\iso}{g}{
+    \IfValueTF{#1}
+      { \xrightarrow[\raisebox{0.55em}{\smash{\ensuremath{\sim}}}]{#1} }
+      { \xrightarrow{\raisebox{-1ex}[0ex][0ex]{$\sim$}} }
+}
+
+%%% TIKZCD VERSIONS
+% Reference: https://tex.stackexchange.com/questions/399820/in-tikz-cd-define-arrow-style-to-add-label-node-by-arrowhead
+\tikzset{
+    iso/.style={"\sim"{font=\large,outer sep=-2pt,#1}},
+    iso/.default={},
+    inj/.style={hook},
+    epi/.style={two heads},
+}
+
+\DeclareMathOperator{\id}{id}
+\newcommand\restrict[1]                     % function restriction
+    {\raisebox{-.5ex}{$|$}_{#1}}
+\newcommand{\sgn}                           % sign function
+  { \operatorname{sgn}\@parens }
+
+\newcommand{\Supp}
+    { \operatorname{Supp}\@parens }
+\newcommand{\graph}
+    { \operatorname{graph}\@parens }
+\newcommand{\Imm}
+    { \operatorname{Im}\@parens }
+\newcommand{\coker}
+    { \operatorname{coker}\@parens }
+
+%%% COMPLEX NUMBERS %%%
+\AtBeginDocument{% 
+  \let\oldre\Re
+  \let\oldim\Im
+  \let\Re\relax
+  \let\Im\relax
+  \DeclareDocumentCommand{\Re}{}              % real part
+    { \operatorname{Re}\@parens }
+  \DeclareDocumentCommand{\Im}{}              % imaginary part
+    { \operatorname{Im}\@parens }
+}
+
+\newcommand{\Conj}{\overline}        % complex conjugate
+
+%%% DIVISIBILITY
+\def\localbig#1#2{%  % used for (n)dividesaux just below
+  \sbox\z@{$\m@th#1
+    \sbox\tw@{$#1()$}%
+    \dimen@=\ht\tw@\advance\dimen@\dp\tw@
+    \nulldelimiterspace\z@\left#2\vcenter to1.2\dimen@{}\right.
+  $}\box\z@}
+
+\newcommand{\divides}{\mathrel{\mathpalette\dividesaux\relax}}
+\newcommand{\ndivides}{\mathrel{\mathpalette\ndividesaux\relax}}
+
+\newcommand{\dividesaux}[2]{\mbox{$\m@th#1\localbig{#1}|$}}
+\newcommand{\ndividesaux}[2]{%
+  \mkern.5mu
+  \ooalign{%
+    \hidewidth$\m@th#1\localbig{#1}|$\hidewidth\cr
+    $\m@th#1\nmid$\cr%
+  }%
+}
+
+%%% ANALYSIS
+
+\NewDocumentCommand{\seqn}{s o m e_}{
+    \IfBooleanTF{#1}
+        {\parens*{#3}}
+        {\parens[#2]{#3}}
+    \IfValueT{#4}
+        {_{#4}}
+}
+
+%%% TOPOLOGY %%%
+
+\newif\ifballclos
+\pgfkeys{
+    /ball/.is family, /ball/.cd,
+    clos/.is if = \ifballclos,
+    sup/.store in = \ballsup,
+    size/.store in = \ballsize,
+    space/.store in = \ballspace,
+}
+
+\NewDocumentCommand{\Ball}{o g}{
+    {\pgfkeys{
+        /ball/.cd, clos=false,
+    }}
+    % \pgfkeys{
+    %     /ball/.cd,
+    %     % sup = {},
+    %     % space = {},
+    %     % size = {},
+    %     clos = false,
+    %     % \IfValueT{#1}{#1}{}
+    % }
+    \overline{B}
+        % \else B
+        % \fi
+    % \ifdefempty{\ballsup}
+    %     { }
+    %     { ^{\ballsup} }
+    % \ifdefempty{\ballsup}
+    %     { }
+    %     { ^{\ballsup} }
+    % \ifdefempty{\ballsize}
+    %     { }
+    %     { \ifx\ballsize* \@parens*
+    %       \else \@parens[\ballsup]
+    %       \fi
+    %     }
+}
+
+%%% ALGEBRA %%%
+
+\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Span}{Span}
+
+% quotients
+\NewDocumentCommand{\quot}{smm}{
+    \IfBooleanTF{#1} 
+    {% "left quotients" i.e. H\G
+        \mathchoice
+        {   %displaystyle
+            {\left.\raisebox{-.15em}{$#2$} \middle\backslash \raisebox{.15em}{$#3$}\right.}
+        } { % textstyle
+            {\left.\raisebox{.1em}{\text{\small $#2$}} \middle\backslash \raisebox{-.1em}{\text{\small $#3$}}\right.}
+        } { % scriptstyle
+            #2\backslash#3
+        } { % scriptstyle
+            #2\backslash#3
+        }
+    }{ % normal quotients, G/H
+        \mathchoice
+        {   %displaystyle
+            {\left.\raisebox{.15em}{$#2$}\middle/\raisebox{-.15em}{$#3$}\right.}
+        } { % textstyle
+            {\left.\raisebox{.1em}{\text{\small $#2$}}\middle/\raisebox{-.1em}{\text{\small $#3$}}\right.}
+        } { % scriptstyle
+            #2/#3
+        } { % scriptstyle
+            #2/#3
+        }
+    }
+}
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Aut}{Aut}
+
+\newcommand{\substr}{\leq}
+\newcommand{\Substr}{\mathrel{\trianglelefteq}}
+
+%% Impotant groups
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SL}{SL}
+\DeclareMathOperator{\Orth}{O}
+
+%%%%% LETTERS %%%%%%
+
+%% Abbrv.
+\newcommand{\bb}{\mathbb}
+\renewcommand{\cal}{\mathcal}
+\renewcommand{\frak}{\mathfrak}
+
+% IMPORTANT SETS
+\newcommand{\C}{\mathbb{C}}     % complex numbers
+\newcommand{\F}{\mathbb{F}}     % generic field
+\newcommand{\K}{\mathbb{K}}     % generic field
+\newcommand{\N}{\mathbb{N}}     % natural numbers
+\newcommand{\Q}{\mathbb{Q}}     % rational numbers
+\newcommand{\R}{\mathbb{R}}     % real numbers
+\newcommand{\Z}{\mathbb{Z}}     % integers
+
+\endinput

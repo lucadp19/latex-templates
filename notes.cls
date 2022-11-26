@@ -28,10 +28,14 @@
 ]{memoir}
 
 %%% EXTERNAL PACKAGES
-\usepackage[\notes@language]{babel} % for language
-\usepackage[usenames,dvipsnames,svgnames]{xcolor}
-\usepackage{ragged2e}
-\usepackage{amsmath, amsthm, amssymb, mathtools} % general math
+\RequirePackage[\notes@language]{babel} % for language
+\ifnotes@colors
+    \RequirePackage[usenames,dvipsnames,svgnames]{xcolor}
+\else 
+    \RequirePackage[usenames,dvipsnames,svgnames, monochrome]{xcolor}
+\fi
+\RequirePackage{ragged2e}
+\RequirePackage{amsmath, amsthm, amssymb, mathtools} % general math
 
 
 %%% FONTS
@@ -39,11 +43,11 @@
 \renewcommand{\footnotesize}{\fontsize{8pt}{9pt}\selectfont}
 
 \ifpdf
-    \usepackage[T1]{fontenc}
-    \usepackage[utf8]{inputenc}
-    \usepackage{textcomp}
+    \RequirePackage[T1]{fontenc}
+    \RequirePackage[utf8]{inputenc}
+    \RequirePackage{textcomp}
     % Setup microtype for pdfLaTex
-    \usepackage[final,tracking=true,kerning=true]{microtype}
+    \RequirePackage[final,tracking=true,kerning=true]{microtype}
 
     \RequirePackage{newpxtext}
     \RequirePackage{eulerpx}
@@ -59,18 +63,16 @@
 
 \ifxetex
     % Setup microtype for XeLaTeX
-    \usepackage[expansion=false,final]{microtype}
+    \RequirePackage[expansion=false,final]{microtype}
 
-    \usepackage{fontspec}
-    \usepackage{unicode-math}
+    \RequirePackage{fontspec}
+    \RequirePackage{unicode-math}
 
-    \usepackage{etoolbox}
+    \RequirePackage{etoolbox}
     \patchcmd{\arrowfill@}{-7mu}{-5mu}{}{}
     \patchcmd{\arrowfill@}{-7mu}{-5mu}{}{}
     \patchcmd{\arrowfill@}{-2mu}{-4mu}{}{}
-    \patchcmd{\arrowfill@}{-2mu}{-4mu}{}{}
-
-    
+    \patchcmd{\arrowfill@}{-2mu}{-4mu}{}{}    
 
     \newfontfeature{Microtype}{protrusion=default;expansion=default;}%
     \setmainfont{texgyrepagella-regular.otf}
@@ -160,9 +162,9 @@
     \createplainmark{index}{both}{\indexname}
     \createplainmark{glossary}{both}{\glossaryname}
 }
-\makerunningwidth{notes}[425pt]{425pt}
+\makerunningwidth{notes}[435pt]{435pt}
 \makeheadposition{notes}{flushright}{flushleft}{flushright}{flushleft}
-\makeheadrule{notes}{425pt}{0.5pt}
+\makeheadrule{notes}{435pt}{0.5pt}
 \makeevenhead{notes}{\small\textsf{\leftmark}}{}{\small\textsf{\rightmark}\hspace{1em}\thepage}
 \makeoddhead{notes}{\small\textsf{\leftmark}}{}{\small\textsf{\rightmark}\hspace{1em}\thepage}
 
@@ -200,21 +202,21 @@
 
 %%% Section and Subsection Style %se%%
 \setsecheadstyle{\normalfont\LARGE\sffamily}
-\ifnotes@colors
+% \ifnotes@colors
     \setsubsecheadstyle{\sffamily\bfseries\color{RoyalBlue}}
-\else
-    \setsubsecheadstyle{\sffamily\bfseries}
-\fi
+% \else
+    % \setsubsecheadstyle{\sffamily\bfseries}
+% \fi
 \newcommand\sectionsecnumformat{\thesection\quad}
 \newcommand\subsectionsecnumformat{\thesubsection\quad}
 \setaftersecskip{\baselineskip}
 
 %%% Paragraph Style %%%
-\ifnotes@colors
-    \setparaheadstyle{\scshape\color{RoyalBlue}}
-\else
-    \setparaheadstyle{\scshape}
-\fi
+% \ifnotes@colors
+    \setparaheadstyle{\sffamily\bfseries\color{RoyalBlue}}
+% \else
+    \setparaheadstyle{\sffamily\bfseries}
+% \fi
 \setbeforeparaskip{1em}
 \setafterparaskip{0.5em}
 
@@ -249,16 +251,23 @@
     \sffamily\small%
 }
 
+%%% Proof section
+\providecommand\pfsection[1]{
+    \vspace{0.5em}
+    {\sffamily\bfseries\@newthoughtcolor #1}
+    \hspace{1em}
+}
+
 %%% newthoughts commands
 \newskip\newthoughtskipamount
 \newthoughtskipamount=1.0\baselineskip plus 0.5ex minus 0.2ex
 \providecommand\newthoughtbreak{\par\ifdim\lastskip<\newthoughtskipamount
     \removelastskip\penalty-100\newthoughtskip\fi}
 
-\newcommand{\@newthoughtcolor}{}
-\ifnotes@colors
-    \renewcommand{\@newthoughtcolor}{\color{RoyalBlue}}
-\fi
+\newcommand{\@newthoughtcolor}{\color{RoyalBlue}}
+% \ifnotes@colors
+%     \renewcommand{\@newthoughtcolor}{\color{RoyalBlue}}
+% \fi
 
 \newcommand{\newthoughtskip}{\vspace\newthoughtskipamount}
 \providecommand\newthought[1]{%
@@ -272,26 +281,28 @@
 \providecommand\newthoughtpar[1]{\nopagebreak\newthought{#1}\par\nopagebreak\noindent\ignorespaces}
 
 %%%%%% Renewing description environment
-\ifnotes@colors
+% \ifnotes@colors
     \renewcommand*\descriptionlabel[1]{\hspace\labelsep\normalfont\sffamily\color{RoyalBlue} #1}
-\else
-    \renewcommand*\descriptionlabel[1]{\hspace\labelsep\normalfont\sffamily #1}
-\fi
+% \else
+    % \renewcommand*\descriptionlabel[1]{\hspace\labelsep\normalfont\sffamily #1}
+% \fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% My packages
-\ifnotes@colors
-    \RequirePackage[
-        style=modernth,
-        thmstyle=\notes@thmstyle,
-        colors
-    ]{base-preamble}
-\else
-    \RequirePackage[
-        style=modernth,
-        thmstyle=\notes@thmstyle,
-    ]{base-preamble}
-\fi
+
+\RequirePackage{preamble}
+
+\ifthenelse{\equal{\notes@thmstyle}{boxed}}{%
+    \ifnotes@colors
+        \usepackage[colors]{boxed-thm}
+    \else
+        \usepackage{boxed-thm}
+    \fi
+}{}
+
+\ifthenelse{\equal{\notes@thmstyle}{simple}}{%
+    \usepackage{simple-thm}
+}{}
 
 %%% HyperRef %%%
 % \AtEndPreamble{
