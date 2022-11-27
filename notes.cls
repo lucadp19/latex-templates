@@ -12,12 +12,12 @@
 
 % Sets the language (default is english)
 \DeclareStringOption[english]{language}[english]
-% Sets the fontstyle
-\DeclareStringOption[default]{fontstyle}[default]
 % Sets the theorems style (default: boxed)
 \DeclareStringOption[boxed]{thmstyle}[boxed]
 % Sets whether colors will be used
 \DeclareBoolOption[true]{colors}
+% Sets whether the standard preamble is loaded
+\DeclareBoolOption[false]{nopreamble}
 % Other options are sent to memoir
 \DeclareDefaultOption{\PassOptionsToClass{\CurrentOption}{memoir}}
 
@@ -290,7 +290,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% My packages
 
-\RequirePackage{preamble}
+\ifnotes@nopreamble \else \RequirePackage{preamble} \fi
 
 \ifthenelse{\equal{\notes@thmstyle}{boxed}}{%
     \ifnotes@colors
